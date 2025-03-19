@@ -1,26 +1,28 @@
 -- DDL Script untuk Fact Constellation Schema - Brazilian E-Commerce Public Dataset
 
 -- Tabel Dimensi
-CREATE OR REPLACE TABLE dim_geo (
-    geo_sk INT PRIMARY KEY,
+CREATE OR REPLACE TABLE dim_geolocation (
+    geolocation_sk INT PRIMARY KEY,
     zip_code_prefix STRING UNIQUE NOT NULL,
-    city STRING NOT NULL,
-    state STRING NOT NULL
+    latitude DECIMAL(10,6) NOT NULL,
+    longitude DECIMAL(10,6) NOT NULL,
+    geolocation_city STRING NOT NULL,
+    geolocation_state STRING NOT NULL
 );
 
 CREATE OR REPLACE TABLE dim_customers (
     customer_sk INT PRIMARY KEY,
     customer_id STRING UNIQUE NOT NULL,
     customer_unique_id STRING NOT NULL,
-    geo_sk INT NOT NULL,
-    FOREIGN KEY (geo_sk) REFERENCES dim_geo(geo_sk)
+    geolocation_sk INT NOT NULL,
+    FOREIGN KEY (geolocation_sk) REFERENCES dim_geo(geolocation_sk)
 );
 
 CREATE OR REPLACE TABLE dim_sellers (
     seller_sk INT PRIMARY KEY,
     seller_id STRING UNIQUE NOT NULL,
-    geo_sk INT NOT NULL,
-    FOREIGN KEY (geo_sk) REFERENCES dim_geo(geo_sk)
+    geolocation_sk INT NOT NULL,
+    FOREIGN KEY (geolocation_sk) REFERENCES dim_geo(geolocation_sk)
 );
 
 CREATE OR REPLACE TABLE dim_time (
