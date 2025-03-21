@@ -33,6 +33,6 @@ Dataset terdiri dari 9 file CSV yang saling terhubung, menggambarkan aktivitas l
 | olist_geolocation_dataset.csv         | 1.000.016             |
 
 <br>
-<img src="asset/data-relation.png" alt="Relasi data" width="auto"/>
+<img src="assets/data-relation.png" alt="Relasi data" width="auto"/>
 
 # Script ETL Python/pandas
