@@ -1,4 +1,9 @@
-# Nama dan Sumber Dataset:
+## Nama Kelompok
+* Aziz Hendra Atmaja - 24/546050/PPA/06833
+* Aziz Solihin - 24/547433/PPA/06888
+* Furqan - 24/546979/PPA/06867
+
+## Nama dan Sumber Dataset:
 
 Nama: Brazilian E-Commerce Public Dataset by Olist <br>
 Sumber: Dataset ini disediakan oleh Olist, sebuah perusahaan e-commerce asal Brasil, dan diunggah ke Kaggle oleh tim Olist. Dataset ini menyajikan data transaksi e-commerce di Brasil dari tahun 2016 hingga 2018. <br><br>
@@ -34,5 +39,3 @@ Dataset terdiri dari 9 file CSV yang saling terhubung, menggambarkan aktivitas l
 
 <br>
 <img src="assets/data-relation.png" alt="Relasi data" width="auto"/>
-
-# Script ETL Python/pandas
