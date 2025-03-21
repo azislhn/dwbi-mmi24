@@ -7,7 +7,7 @@ CREATE OR REPLACE TABLE dim_customers (
     customer_unique_id VARCHAR(50) NOT NULL,
     customer_city VARCHAR(100),
     customer_state VARCHAR(50),
-    customer_zip_code_prefix VARCHAR(20),
+    customer_zip_code_prefix VARCHAR(20)
 );
 
 CREATE OR REPLACE TABLE dim_sellers (
@@ -19,7 +19,7 @@ CREATE OR REPLACE TABLE dim_sellers (
 
 -- 
 CREATE OR REPLACE TABLE dim_products (
-    produk_key INT AUTO_INCREMENT PRIMARY KEY,
+    produk_key INT PRIMARY KEY,
     product_id VARCHAR(50) NOT NULL,
     product_category_name VARCHAR(100),
     product_category_name_english VARCHAR(100),
@@ -45,7 +45,7 @@ CREATE OR REPLACE TABLE dim_date (
 );
 
 CREATE OR REPLACE TABLE dim_payments (
-    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    payment_id INT PRIMARY KEY,
     order_id VARCHAR(50) NOT NULL,
     payment_sequential INT,
     payment_type VARCHAR(50),
