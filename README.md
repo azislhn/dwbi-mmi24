@@ -3,6 +3,11 @@
 * Aziz Solihin - 24/547433/PPA/06888
 * Furqan - 24/546979/PPA/06867
 
+## Deskripsi Bisnis 
+Olist adalah platform e-commerce yang beroperasi di Brasil, menghubungkan penjual kecil dan menengah dengan berbagai marketplace besar. Dengan model bisnis yang memungkinkan para merchant menjual produk mereka tanpa harus mendaftar secara langsung di setiap marketplace, Olist mempermudah proses penjualan dan logistik bagi pelaku usaha. Setiap pesanan yang dilakukan di Olist dikelola melalui sistem terpusat, yang mencatat detail pesanan, metode pembayaran, biaya pengiriman, serta ulasan pelanggan. Dengan skema ini, Olist tidak hanya membantu pedagang meningkatkan jangkauan pasar mereka, tetapi juga memastikan pengalaman berbelanja yang lebih efisien bagi pelanggan.
+
+Sebagai perusahaan yang bergerak di sektor e-commerce, Olist sangat bergantung pada data untuk memahami tren penjualan, perilaku pelanggan, serta performa pengiriman dan kepuasan pelanggan. Dengan sistem manajemen data yang baik, Olist dapat menganalisis efektivitas metode pembayaran, segmentasi pelanggan berdasarkan lokasi, serta dampak strategi pemasaran terhadap jumlah transaksi. Data yang dikumpulkan juga memungkinkan perusahaan untuk mengoptimalkan proses pengiriman guna mengurangi keterlambatan serta meningkatkan kepuasan pelanggan melalui layanan yang lebih responsif dan transparan. Melalui pendekatan berbasis data ini, Olist bertujuan untuk terus meningkatkan pengalaman berbelanja online dan memperluas jangkauan bisnisnya.
+
 ## Nama dan Sumber Dataset:
 
 Nama: Brazilian E-Commerce Public Dataset by Olist <br>
