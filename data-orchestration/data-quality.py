@@ -6,7 +6,7 @@ import duckdb
 
 def check_null_values():
     """Check for null values in important columns."""
-    conn = duckdb.connect('/path/to/duckdb.db')  # Sesuaikan path
+    conn = duckdb.connect('brazilian_ecommerce.db')  # Sesuaikan path
     df = conn.execute("SELECT * FROM transformed_data").fetchdf()
     conn.close()
     
@@ -15,7 +15,7 @@ def check_null_values():
 
 def check_row_count():
     """Check if transformed data is empty."""
-    conn = duckdb.connect('/path/to/duckdb.db')  # Sesuaikan path
+    conn = duckdb.connect('brazilian_ecommerce.db')  # Sesuaikan path
     row_count = conn.execute("SELECT COUNT(*) FROM transformed_data").fetchone()[0]
     conn.close()
     
