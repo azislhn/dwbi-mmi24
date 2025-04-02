@@ -2,6 +2,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 import pandas as pd
+import duckdb
 
 def extract():
     """Extract data from CSV file."""
@@ -15,9 +16,11 @@ def transform():
     df.to_pickle('/tmp/transformed.pkl')
 
 def load():
-    """Load transformed data to a new CSV file."""
+    """Load transformed data to DuckDB."""
     df = pd.read_pickle('/tmp/transformed.pkl')
-    df.to_csv('/path/to/output.csv', index=False)  # Sesuaikan path
+    conn = duckdb.connect('/path/to/duckdb.db')  # Sesuaikan path
+    conn.execute("CREATE TABLE IF NOT EXISTS transformed_data AS SELECT * FROM df")
+    conn.close()
 
 # Default arguments
 default_args = {
