@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 def extract_data():
     try:
-        conn = duckdb.connect('/path/to/duckdb.db')  # Ganti sesuai path
+        conn = duckdb.connect('brazilian-ecommerce.db')
         df = conn.execute("""
             SELECT invoice_id, total, customer_id, date(invoice_date) AS invoice_date
             FROM invoices
@@ -52,7 +52,7 @@ default_args = {
     'retry_delay': timedelta(minutes=3),
     'email_on_failure': True,
     'email_on_retry': True,
-    'email': ['your_email@example.com'],  # Ganti dengan email kamu
+    'email': ['furqanst@mail.ugm.ac.id'], 
 }
 
 with DAG(
@@ -80,7 +80,7 @@ with DAG(
 
     notify_success = EmailOperator(
         task_id='notify_success',
-        to='your_email@example.com',
+        to='furqanst@mail.ugm.ac.id',
         subject='DAG Success - test_pipeline_dag',
         html_content='All tasks in test_pipeline_dag completed successfully!'
     )
