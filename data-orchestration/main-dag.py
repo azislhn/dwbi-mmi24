@@ -1,78 +1,88 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.operators.email import EmailOperator
-from airflow.utils.email import send_email
 from datetime import datetime, timedelta
 import pandas as pd
 import duckdb
+import matplotlib.pyplot as plt
 
-def extract():
-    """Extract data from CSV file."""
+def extract_data():
     try:
-        df = pd.read_csv('/path/to/source.csv')  # Sesuaikan path
-        df.to_pickle('/tmp/extracted.pkl')
-    except Exception as e:
-        raise ValueError(f"Extract failed: {str(e)}")
-
-def transform():
-    """Transform data using Pandas."""
-    try:
-        df = pd.read_pickle('/tmp/extracted.pkl')
-        df['new_column'] = df['existing_column'] * 2  # Contoh transformasi
-        df.to_pickle('/tmp/transformed.pkl')
-    except Exception as e:
-        raise ValueError(f"Transform failed: {str(e)}")
-
-def load():
-    """Load transformed data to DuckDB."""
-    try:
-        df = pd.read_pickle('/tmp/transformed.pkl')
-        conn = duckdb.connect('/path/to/duckdb.db')  # Sesuaikan path
-        conn.execute("CREATE TABLE IF NOT EXISTS transformed_data AS SELECT * FROM df")
+        conn = duckdb.connect('/path/to/duckdb.db')  # Ganti sesuai path
+        df = conn.execute("""
+            SELECT invoice_id, total, customer_id, date(invoice_date) AS invoice_date
+            FROM invoices
+        """).fetchdf()
+        df.to_pickle('/tmp/invoices.pkl')
         conn.close()
     except Exception as e:
-        raise ValueError(f"Load failed: {str(e)}")
+        raise RuntimeError(f"Extract failed: {str(e)}")
+
+def aggregate_data():
+    try:
+        df = pd.read_pickle('/tmp/invoices.pkl')
+        agg_df = df.groupby('customer_id').agg(
+            jumlah_invoice=('invoice_id', 'count'),
+            total_pembayaran=('total', 'sum'),
+            rata_rata=('total', 'mean')
+        ).reset_index()
+        agg_df.to_csv('/tmp/agg_customer.csv', index=False)
+    except Exception as e:
+        raise RuntimeError(f"Aggregation failed: {str(e)}")
+
+def generate_plot():
+    try:
+        df = pd.read_csv('/tmp/agg_customer.csv')
+        df = df.sort_values('total_pembayaran', ascending=False).head(10)
+        plt.figure(figsize=(10, 6))
+        plt.bar(df['customer_id'].astype(str), df['total_pembayaran'])
+        plt.title('Top 10 Customer by Total Payment')
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.savefig('/tmp/top10_customers.png')
+    except Exception as e:
+        raise RuntimeError(f"Plot generation failed: {str(e)}")
 
 # Default arguments
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
     'start_date': datetime(2025, 4, 1),
-    'retries': 3,
-    'retry_delay': timedelta(minutes=5),
+    'retries': 2,
+    'retry_delay': timedelta(minutes=3),
     'email_on_failure': True,
     'email_on_retry': True,
-    'email': ['your_email@example.com'],  # Ganti dengan email yang sesuai
+    'email': ['your_email@example.com'],  # Ganti dengan email kamu
 }
 
-# Define DAG
 with DAG(
-    'etl_pandas_dag',
+    dag_id='test_pipeline_dag',
     default_args=default_args,
+    description='DAG based on test_pipeline.ipynb with error handling and notifications',
     schedule_interval='@daily',
     catchup=False
 ) as dag:
 
     extract_task = PythonOperator(
-        task_id='extract',
-        python_callable=extract
+        task_id='extract_data',
+        python_callable=extract_data
     )
 
-    transform_task = PythonOperator(
-        task_id='transform',
-        python_callable=transform
+    aggregate_task = PythonOperator(
+        task_id='aggregate_data',
+        python_callable=aggregate_data
     )
 
-    load_task = PythonOperator(
-        task_id='load',
-        python_callable=load
+    plot_task = PythonOperator(
+        task_id='generate_plot',
+        python_callable=generate_plot
     )
 
     notify_success = EmailOperator(
         task_id='notify_success',
-        to='your_email@example.com',  # Ganti dengan email yang sesuai
-        subject='ETL DAG Success',
-        html_content='ETL process completed successfully!'
+        to='your_email@example.com',
+        subject='DAG Success - test_pipeline_dag',
+        html_content='All tasks in test_pipeline_dag completed successfully!'
     )
 
-    extract_task >> transform_task >> load_task >> notify_success
+    extract_task >> aggregate_task >> plot_task >> notify_success
