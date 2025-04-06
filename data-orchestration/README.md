@@ -1,67 +1,86 @@
-## 1. Repositori Kode
+Berikut versi yang telah diperbaiki dan dirapikan dari file README Anda, dengan penyesuaian bahasa, struktur heading, dan konsistensi penulisan agar terlihat lebih profesional dan mudah dibaca:
 
-Data Orchestration dengan Apache Airflow : https://github.com/azislhn/dwbi-mmi24/tree/main/data-orchestration
+---
 
-## 2. Dokumentasi
+## 📁 1. Repositori Kode
 
+Implementasi Data Orchestration menggunakan Apache Airflow tersedia di repositori berikut:  
+🔗 [https://github.com/azislhn/dwbi-mmi24/tree/main/data-orchestration](https://github.com/azislhn/dwbi-mmi24/tree/main/data-orchestration)
+
+---
+
+## 📚 2. Dokumentasi
+
+### 🗺️ Diagram DAG
+
+#### ETL Pipeline
 <img src="etl_pipeline_diagram.jpeg" alt="Diagram DAG ETL" width="auto"/>
-#### Diagram DAG ETL
 
+#### Data Quality Check
 <img src="data_quality_diagram.jpeg" alt="Diagram DAG Data Quality" width="auto"/>
-#### Diagram DAG Data Quality
 
-### Strategi Penjadwalan
+---
 
-Penjadwalan pada DAG ditentukan dengan parameter `schedule_interval='@daily'` yang berarti DAG akan dijalankan satu kali setiap hari. Strategi ini dipilih karena:
+### ⏱️ Strategi Penjadwalan
 
-- Data transaksi (seperti invoice) umumnya bersifat harian, sehingga pembersihan dan analisis dilakukan setiap akhir hari.
-- Frekuensi harian cukup untuk kebutuhan monitoring rutin tanpa membebani resource sistem.
-- Dapat dikombinasikan dengan `catchup=False` agar tidak mengeksekusi backlog task saat DAG pertama kali diaktifkan, yang dapat menyebabkan overload.
+Penjadwalan DAG dilakukan menggunakan parameter `schedule_interval='@daily'`, yang berarti pipeline akan dieksekusi satu kali setiap hari. Alasan pemilihan strategi ini:
 
-### Strategi Partisi
+- Data transaksi (seperti invoice) bersifat harian, sehingga pembersihan dan analisis cukup dilakukan setiap akhir hari.
+- Frekuensi harian cukup untuk kebutuhan monitoring tanpa membebani resource sistem.
+- Digunakan bersama `catchup=False` untuk menghindari eksekusi backlog saat DAG pertama kali diaktifkan.
 
-Walaupun dalam implementasi ini belum menggunakan partisi eksplisit pada penyimpanan, strategi partisi logis digunakan berdasarkan tanggal (misalnya `invoice_date`). Partisi waktu membantu untuk:
+---
 
-- Menyederhanakan pemrosesan data berdasarkan rentang waktu tertentu (harian/bulanan).
-- Mengoptimalkan query dan agregasi data.
-- Memudahkan pelacakan anomali data berdasarkan waktu.
+### 📅 Strategi Partisi
 
-Jika ke depan disimpan di data warehouse atau lake seperti BigQuery, Hive, atau Delta Lake, partisi fisik akan diimplementasikan untuk efisiensi.
+Meskipun belum menerapkan partisi fisik pada penyimpanan, pipeline telah menggunakan strategi partisi logis berbasis tanggal, seperti `invoice_date`. Strategi ini bermanfaat untuk:
 
-### Alasan Pemilihan Fitur Airflow
+- Memudahkan pemrosesan data dalam rentang waktu tertentu (harian/bulanan).
+- Mengoptimalkan performa query dan agregasi data.
+- Mempermudah pelacakan anomali berdasarkan waktu.
 
-#### Error Handling dan Retry Mechanisms
+Jika ke depannya data disimpan di data warehouse atau data lake (misalnya BigQuery, Hive, atau Delta Lake), maka partisi fisik akan diterapkan untuk efisiensi lebih lanjut.
 
-- **Kenapa dipilih?**
-  Agar pipeline lebih andal dan toleran terhadap kegagalan sementara (misalnya, koneksi ke database putus sesaat).
+---
 
-- **Implementasi:**
-  - Menggunakan parameter `retries` dan `retry_delay` untuk otomatis mencoba ulang jika gagal.
-  - Setiap task dibungkus dengan `try/except` agar error bisa ditangkap dan dijelaskan dengan jelas.
+### ⚙️ Alasan Pemilihan Fitur Airflow
 
-- **Manfaat:**
-  - Mengurangi kegagalan DAG secara total akibat masalah minor.
-  - Membantu debugging dengan pesan error yang informatif.
+#### ✅ Error Handling & Retry Mechanism
 
-#### Email Notifications for Success/Failure
+**Mengapa dipilih?**  
+Agar pipeline lebih andal dan tahan terhadap gangguan sementara (misalnya, koneksi database terputus sesaat).
 
-- **Kenapa dipilih?**
-  Untuk memberikan visibilitas kepada tim data engineering ketika pipeline selesai sukses atau gagal.
+**Implementasi:**  
+- Penggunaan parameter `retries` dan `retry_delay` untuk otomatisasi percobaan ulang.
+- Task dibungkus dengan blok `try/except` untuk menangkap dan menjelaskan error.
 
-- **Implementasi:**
-  - Fitur `email_on_failure` dan `email_on_retry` diaktifkan pada `default_args`.
-  - Task `EmailOperator` ditambahkan untuk mengirim notifikasi saat DAG berhasil dieksekusi.
+**Manfaat:**  
+- Mengurangi kemungkinan kegagalan total pipeline karena error minor.
+- Memberikan log error yang informatif untuk proses debugging.
 
-- **Manfaat:**
-  - Respons cepat terhadap kegagalan pipeline.
-  - Menyediakan log harian bahwa data pipeline berjalan sebagaimana mestinya.
+---
 
-## 3. Bukti Eksekusi
+#### 📧 Email Notifikasi (Sukses/Gagal)
 
-<img src="etl_dag_success.jpeg" alt="DAG ETL" width="auto"/>
-#### Diagram DAG ETL
+**Mengapa dipilih?**  
+Untuk memberikan visibilitas kepada tim data engineering terkait status eksekusi pipeline.
 
-<img src="data_quality_dag_success.jpeg" alt="DAG Data Quality" width="auto"/>
-#### Diagram DAG Data Quality
+**Implementasi:**  
+- Aktivasi fitur `email_on_failure` dan `email_on_retry` di `default_args`.
+- Penambahan task `EmailOperator` untuk notifikasi saat DAG berhasil dijalankan.
+
+**Manfaat:**  
+- Memungkinkan respons cepat terhadap kegagalan pipeline.
+- Menyediakan log rutin bahwa pipeline berjalan sebagaimana mestinya.
+
+---
+
+## 📸 3. Bukti Eksekusi DAG
+
+#### ETL DAG - Eksekusi Berhasil
+<img src="etl_dag_success.jpeg" alt="DAG ETL Success" width="auto"/>
+
+#### Data Quality DAG - Eksekusi Berhasil
+<img src="data_quality_dag_success.jpeg" alt="DAG Data Quality Success" width="auto"/>
 
 ---
