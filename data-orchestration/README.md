@@ -5,11 +5,9 @@ Data Orchestration dengan Apache Airflow : https://github.com/azislhn/dwbi-mmi24
 ## 2. Dokumentasi
 
 <img src="etl_pipeline_diagram.jpeg" alt="Diagram DAG ETL" width="auto"/>
-<br>
 #### Diagram DAG ETL
 
 <img src="data_quality_diagram.jpeg" alt="Diagram DAG Data Quality" width="auto"/>
-<br>
 #### Diagram DAG Data Quality
 
 ### Strategi Penjadwalan
@@ -61,11 +59,9 @@ Jika ke depan disimpan di data warehouse atau lake seperti BigQuery, Hive, atau 
 ## 3. Bukti Eksekusi
 
 <img src="etl_dag_success.jpeg" alt="DAG ETL" width="auto"/>
-<br>
 #### Diagram DAG ETL
 
 <img src="data_quality_dag_success.jpeg" alt="DAG Data Quality" width="auto"/>
-<br>
 #### Diagram DAG Data Quality
 
 ---
