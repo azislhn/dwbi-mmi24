@@ -1,7 +1,3 @@
-Berikut versi yang telah diperbaiki dan dirapikan dari file README Anda, dengan penyesuaian bahasa, struktur heading, dan konsistensi penulisan agar terlihat lebih profesional dan mudah dibaca:
-
----
-
 ## 📁 1. Repositori Kode
 
 Implementasi Data Orchestration menggunakan Apache Airflow tersedia di repositori berikut:  
