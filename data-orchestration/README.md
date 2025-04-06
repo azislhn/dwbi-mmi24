@@ -18,7 +18,7 @@ Penjadwalan pada DAG ditentukan dengan parameter `schedule_interval='@daily'` ya
 - Frekuensi harian cukup untuk kebutuhan monitoring rutin tanpa membebani resource sistem.
 - Dapat dikombinasikan dengan `catchup=False` agar tidak mengeksekusi backlog task saat DAG pertama kali diaktifkan, yang dapat menyebabkan overload.
 
-## Strategi Partisi
+### Strategi Partisi
 
 Walaupun dalam implementasi ini belum menggunakan partisi eksplisit pada penyimpanan, strategi partisi logis digunakan berdasarkan tanggal (misalnya `invoice_date`). Partisi waktu membantu untuk:
 
@@ -28,9 +28,9 @@ Walaupun dalam implementasi ini belum menggunakan partisi eksplisit pada penyimp
 
 Jika ke depan disimpan di data warehouse atau lake seperti BigQuery, Hive, atau Delta Lake, partisi fisik akan diimplementasikan untuk efisiensi.
 
-## Alasan Pemilihan Fitur Airflow
+### Alasan Pemilihan Fitur Airflow
 
-### 1. Error Handling dan Retry Mechanisms
+#### Error Handling dan Retry Mechanisms
 
 - **Kenapa dipilih?**
   Agar pipeline lebih andal dan toleran terhadap kegagalan sementara (misalnya, koneksi ke database putus sesaat).
@@ -43,7 +43,7 @@ Jika ke depan disimpan di data warehouse atau lake seperti BigQuery, Hive, atau 
   - Mengurangi kegagalan DAG secara total akibat masalah minor.
   - Membantu debugging dengan pesan error yang informatif.
 
-### 2. Email Notifications for Success/Failure
+#### Email Notifications for Success/Failure
 
 - **Kenapa dipilih?**
   Untuk memberikan visibilitas kepada tim data engineering ketika pipeline selesai sukses atau gagal.
