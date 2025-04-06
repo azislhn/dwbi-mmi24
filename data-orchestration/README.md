@@ -5,10 +5,10 @@ Data Orchestration dengan Apache Airflow : https://github.com/azislhn/dwbi-mmi24
 ## 2. Dokumentasi
 
 <img src="etl_pipeline_diagram.jpeg" alt="Diagram DAG ETL" width="auto"/>
-**Diagram DAG ETL**
+#### Diagram DAG ETL
 
 <img src="data_quality_diagram.jpeg" alt="Diagram DAG ETL" width="auto"/>
-**Diagram DAG Data Quality**
+#### Diagram DAG Data Quality
 
 ### Strategi Penjadwalan
 
@@ -55,5 +55,8 @@ Jika ke depan disimpan di data warehouse atau lake seperti BigQuery, Hive, atau 
 - **Manfaat:**
   - Respons cepat terhadap kegagalan pipeline.
   - Menyediakan log harian bahwa data pipeline berjalan sebagaimana mestinya.
+
+## 3. Bukti Eksekusi
+
 
 ---
