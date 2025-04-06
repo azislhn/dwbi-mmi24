@@ -1,3 +1,7 @@
+## Repositori Kode
+
+Data Orchestration dengan Apache Airflow : https://github.com/azislhn/dwbi-mmi24/tree/main/data-orchestration
+
 ## Strategi Penjadwalan
 
 Penjadwalan pada DAG ditentukan dengan parameter `schedule_interval='@daily'` yang berarti DAG akan dijalankan satu kali setiap hari. Strategi ini dipilih karena:
