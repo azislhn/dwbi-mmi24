@@ -1,5 +1,13 @@
+""" 
+DAG Pipeline ETL
+- Mengimplementasikan dependensi tugas menggunakan operator tradisional >> dan <<
+- DAG mencakup komponen tugas ekstraksi transformasi dan loading data, serta satu sensor untuk memeriksa ketersediaan data (wait_for_dataset)
+- Mengiplementasikan fitur Airflow: branching logic based on conditions, error handling and retry mechanisms, dan email notifications for success/failure
+"""
+
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.operators.email import EmailOperator
 from airflow.sensors.python import PythonSensor
 from datetime import datetime, timedelta
 import os
@@ -9,7 +17,7 @@ import pandas as pd
 import kagglehub as kh
 
 def open_connection():
-    return duckdb.connect('brazilian-ecommerce.db')
+    return duckdb.connect('brazilian_ecommerce.db')
 
 def close_connection(conn):
     conn.close()
@@ -300,9 +308,13 @@ def load_data(conn):
 
 default_args = {
     'owner': 'airflow',
-    'start_date': datetime(2025, 1, 1),
+    'start_date': datetime(2025, 4, 1),
+    'email': ['azizsolihin@mail.ugm.ac.id'],
+    'email_on_failure': True,
+    'email_on_retry': False,
+    'email_on_success': True,
     'retries': 1,
-    'retry_delay': timedelta(minutes=5),
+    'retry_delay': timedelta(minutes=1),
 }
 
 # Inisialisasi DAG
@@ -310,19 +322,11 @@ with DAG(
     dag_id='etl_pipeline_duckdb',
     default_args=default_args,
     description='ETL pipeline untuk Brazilian E-Commerce ke DuckDB',
-    schedule_interval='@daily',  # atau bisa diganti sesuai kebutuhan
+    schedule_interval='@daily',
     catchup=False,
     tags=['etl', 'ecommerce', 'duckdb']
 
 ) as dag:
-    
-    wait_for_dataset = PythonSensor(
-        task_id='wait_for_dataset_dict',
-        python_callable=_get_dataset_dict,
-        mode='reschedule',
-        poke_interval=30,   # Cek setiap 30 detik
-        timeout=60 * 60 * 2,  # Maks waktu tunggu: 2 jam
-    )
 
     def initialize():
         conn = open_connection()
@@ -343,6 +347,14 @@ with DAG(
         conn = open_connection()
         load_data(conn)
         close_connection(conn)
+
+    wait_for_dataset = PythonSensor(
+        task_id='wait_for_dataset_dict',
+        python_callable=_get_dataset_dict,
+        mode='reschedule',
+        poke_interval=30,   # Cek setiap 30 detik
+        timeout=60 * 60 * 2,  # Maks waktu tunggu: 2 jam
+    )
 
     # Define task dengan PythonOperator
     initialize_schema = PythonOperator(
@@ -365,5 +377,12 @@ with DAG(
         python_callable=load
     )
 
+    notify_success = EmailOperator(
+        task_id='notify_success',
+        to='furqanst@mail.ugm.ac.id',
+        subject='DAG Success - etl_pipeline_duckdb',
+        html_content='All tasks in etl_pipeline_duckdb completed successfully!'
+    )
+
     # Set urutan dependensi
-    initialize_schema >> wait_for_dataset >> extract_task >> transform_task >> load_task
+    initialize_schema >> wait_for_dataset >> extract_task >> transform_task >> load_task >> notify_success
