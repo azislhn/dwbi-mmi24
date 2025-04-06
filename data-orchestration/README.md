@@ -10,7 +10,7 @@ Data Orchestration dengan Apache Airflow : https://github.com/azislhn/dwbi-mmi24
 <img src="data_quality_diagram.jpeg" alt="Diagram DAG ETL" width="auto"/>
 **Diagram DAG Data Quality**
 
-# Strategi Penjadwalan
+### Strategi Penjadwalan
 
 Penjadwalan pada DAG ditentukan dengan parameter `schedule_interval='@daily'` yang berarti DAG akan dijalankan satu kali setiap hari. Strategi ini dipilih karena:
 
