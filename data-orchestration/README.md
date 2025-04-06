@@ -80,3 +80,55 @@ Untuk memberikan visibilitas kepada tim data engineering terkait status eksekusi
 <img src="data_quality_dag_success.jpeg" alt="DAG Data Quality Success" width="auto"/>
 
 ---
+
+## 📊 4. Rencana Visualisasi
+### 🧩 Ringkasan
+Pipeline ETL telah berhasil dijalankan menggunakan Apache Airflow, dan data telah dimuat ke dalam Data Warehouse dengan skema Snowflake. Struktur terdiri dari satu tabel fakta utama (`fact_orders`) dan beberapa tabel dimensi seperti `dim_customers`, `dim_products`, `dim_sellers`, `dim_date`, dan `dim_payments`. Data kini telah terstruktur dan siap digunakan untuk keperluan analisis dan visualisasi.
+
+### 🛠️ Alat Visualisasi yang Direkomendasikan: Tableau
+Kami merekomendasikan penggunaan Tableau karena:
+- Mudah digunakan dengan antarmuka drag-and-drop untuk eksplorasi visual.
+- Mendukung koneksi langsung ke berbagai sumber data.
+- Mendukung pembuatan visualisasi kompleks seperti tren waktu, heatmap geografis, dan analisis multi-dimensi.
+- Cocok untuk membuat dashboard interaktif.
+
+### 📌 Contoh Query untuk Visualisasi
+
+#### 1. Total Penjualan per Bulan
+```sql
+SELECT  
+    d.year,  
+    d.month_name,  
+    SUM(f.sales_amount) AS total_sales  
+FROM fact_orders f  
+JOIN dim_date d ON f.date_id = d.date_id  
+GROUP BY d.year, d.month_name  
+ORDER BY d.year, d.month;
+```
+#### 2. Top 5 Produk Terlaris
+```sql
+SELECT  
+    p.product_category_name,  
+    COUNT(*) AS total_ordered  
+FROM fact_order_items foi  
+JOIN dim_products p ON foi.product_id = p.product_id  
+GROUP BY p.product_category_name  
+ORDER BY total_ordered DESC  
+LIMIT 5;
+```
+#### 3. Distribusi Metode Pembayaran
+```sql
+SELECT  
+    dp.payment_type,  
+    COUNT(*) AS total_transactions,  
+    SUM(dp.payment_value) AS total_payment  
+FROM dim_payments dp  
+GROUP BY dp.payment_type;
+```
+#### 4. Rata-Rata Waktu Pengiriman
+```sql
+SELECT  
+    AVG(DATEDIFF(day, order_approved_at, order_delivered_customer_date)) AS avg_delivery_days  
+FROM fact_orders  
+WHERE order_delivered_customer_date IS NOT NULL;
+```
