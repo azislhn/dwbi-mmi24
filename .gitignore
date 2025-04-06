@@ -1,3 +1,4 @@
 *brazilian_ecommerce.db
 *.test.*
 *.venv
+test*
