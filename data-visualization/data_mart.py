@@ -64,10 +64,18 @@ vw_tren_pendapatan = sqlite_connect.execute("SELECT * FROM vw_tren_pendapatan").
 
 sqlite_connect.execute("""
 CREATE OR REPLACE VIEW vw_kpi_operasional_mingguan AS
-SELECT *
+SELECT
+    strftime('%Y', tanggal) AS tahun,
+    strftime('%W', tanggal) AS minggu_ke,
+    MIN(tanggal) AS awal_minggu,
+    MAX(tanggal) AS akhir_minggu,
+    SUM(jumlah_order) AS total_order,
+    ROUND(SUM(total_biaya_pengiriman), 2) AS total_biaya_pengiriman,
+    ROUND(AVG(rata_rata_waktu_pengiriman), 2) AS rata2_waktu_pengiriman,
+    ROUND(AVG(jumlah_metode_pembayaran), 2) AS rata2_metode_pembayaran
 FROM dm_operasional_harian
-WHERE tanggal >= DATE(CURRENT_DATE - INTERVAL 7 DAY)
-ORDER BY tanggal DESC;
+GROUP BY tahun, minggu_ke
+ORDER BY tahun DESC, minggu_ke DESC;
 """)
 # DataFrame KPI Operasional Mingguan
 vw_kpi_operasional_mingguan = duck_connect.execute("SELECT * FROM vw_kpi_operasional_mingguan").fetchdf()
