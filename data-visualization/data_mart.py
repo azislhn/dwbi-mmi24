@@ -73,7 +73,7 @@ ORDER BY year, month;
 # DataFrame Tren Pendapatan
 vw_tren_pendapatan = sqlite_connect.execute("SELECT * FROM vw_tren_pendapatan").fetchall()
 
-sqlite_connect.execute("DROP VIEW IF EXISTS vw_kpi_penjualan_bulanan;")
+sqlite_connect.execute("DROP VIEW IF EXISTS vw_kpi_operasional_mingguan;")
 sqlite_connect.execute("""
 CREATE VIEW vw_kpi_operasional_mingguan AS
 SELECT
