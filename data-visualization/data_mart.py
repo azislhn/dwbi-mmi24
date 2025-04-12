@@ -5,10 +5,12 @@ duck_connect = duckdb.connect(database='brazilian_ecommerce.db', read_only=False
 
 # Create the data mart tables
 duck_connect.execute("""
-CREATE OR REPLACE TABLE dm_penjualan_bulanan AS
+CREATE OR REPLACE TABLE dm_penjualan_by_time AS
 SELECT
+    CAST(fo.order_delivered_customer_date AS DATE) AS tanggal,
     d.year,
     d.month,
+    d.quarter,
     d.month_name,
     dp.product_category_name_english AS kategori,
     dc.customer_city AS kota,
@@ -21,9 +23,17 @@ JOIN dim_customers dc ON fo.customer_id = dc.customer_id
 JOIN fact_order_items foi ON fo.order_id = foi.order_id
 JOIN dim_products dp ON foi.product_id = dp.product_id
 WHERE fo.order_status = 'delivered'
-GROUP BY 1, 2, 3, 4, 5;
+GROUP BY
+    CAST(fo.order_delivered_customer_date AS DATE),
+    d.year,
+    d.quarter,
+    d.month,
+    d.month_name,
+    dp.product_category_name_english,
+    dc.customer_city
+ORDER BY tanggal;
 """)
-dm_penjualan_bulanan = duck_connect.execute("SELECT * FROM dm_penjualan_bulanan").fetchdf()
+dm_penjualan_by_time = duck_connect.execute("SELECT * FROM dm_penjualan_by_time").fetchdf()
 
 duck_connect.execute("""
 CREATE OR REPLACE TABLE dm_operasional_harian AS
@@ -44,7 +54,7 @@ GROUP BY 1, 2;
 dm_operasional_harian = duck_connect.execute("SELECT * FROM dm_operasional_harian").fetchdf()
 
 sqlite_connect = sqlite3.connect('data_mart.sqlite')
-dm_penjualan_bulanan.to_sql('dm_penjualan_bulanan', sqlite_connect, if_exists='replace', index=False)
+dm_penjualan_by_time.to_sql('dm_penjualan_by_time', sqlite_connect, if_exists='replace', index=False)
 dm_operasional_harian.to_sql('dm_operasional_harian', sqlite_connect, if_exists='replace', index=False)
 
 # Create the data mart views
