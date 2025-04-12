@@ -43,8 +43,12 @@ GROUP BY 1, 2;
 """)
 dm_operasional_harian = duck_connect.execute("SELECT * FROM dm_operasional_harian").fetchdf()
 
+sqlite_connect = sqlite3.connect('data_mart.sqlite')
+dm_penjualan_bulanan.to_sql('dm_penjualan_bulanan', sqlite_connect, if_exists='replace', index=False)
+dm_operasional_harian.to_sql('dm_operasional_harian', sqlite_connect, if_exists='replace', index=False)
+
 # Create the data mart views
-duck_connect.execute("""
+sqlite_connect.execute("""
 CREATE OR REPLACE VIEW vw_tren_pendapatan AS
 SELECT 
     year,
@@ -55,22 +59,18 @@ FROM dm_penjualan_bulanan
 GROUP BY year, month, month_name
 ORDER BY year, month;
 """)
-vw_tren_pendapatan = duck_connect.execute("SELECT * FROM vw_tren_pendapatan").fetchdf()
+# DataFrame Tren Pendapatan
+vw_tren_pendapatan = sqlite_connect.execute("SELECT * FROM vw_tren_pendapatan").fetchdf()
 
-duck_connect.execute("""
+sqlite_connect.execute("""
 CREATE OR REPLACE VIEW vw_kpi_operasional_mingguan AS
 SELECT *
 FROM dm_operasional_harian
 WHERE tanggal >= CURRENT_DATE - INTERVAL 7 DAY
 ORDER BY tanggal DESC;
 """)
+# DataFrame KPI Operasional Mingguan
 vw_kpi_operasional_mingguan = duck_connect.execute("SELECT * FROM vw_kpi_operasional_mingguan").fetchdf()
-
-sqlite_connect = sqlite3.connect('data_mart.sqlite')
-dm_penjualan_bulanan.to_sql('dm_penjualan_bulanan', sqlite_connect, if_exists='replace', index=False)
-dm_operasional_harian.to_sql('dm_operasional_harian', sqlite_connect, if_exists='replace', index=False)
-vw_tren_pendapatan.to_sql('vw_tren_pendapatan', sqlite_connect, if_exists='replace', index=False)
-vw_kpi_operasional_mingguan.to_sql('vw_kpi_operasional_mingguan', sqlite_connect, if_exists='replace', index=False)
 
 duck_connect.close()
 sqlite_connect.close()
