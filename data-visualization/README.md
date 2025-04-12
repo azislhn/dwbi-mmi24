@@ -1,43 +1,51 @@
-# **Data Mart E-Commerce Brasil**  
+# Brazilian E-Commerce Data Mart Builder
 
-## **Gambaran Umum**  
-Skrip ini membangun *data mart* untuk analisis data e-commerce Brasil menggunakan **DuckDB** (pemrosesan) dan **SQLite** (penyimpanan). Dibuat dua tabel fakta dan dua *view* analitis untuk melacak tren penjualan dan KPI operasional.  
+This project builds a simple **Data Mart** from a Brazilian e-commerce dataset using **DuckDB** and **SQLite**. It creates two main data marts (monthly sales and daily operations), stores them in SQLite, and provides views for analytical purposes.
 
-## **Fitur**  
-### **1. Tabel Data Mart**  
-- **`dm_penjualan_bulanan`** (Penjualan Bulanan):  
-  - Melacak penjualan berdasarkan tahun, bulan, kategori produk, dan kota pelanggan.  
-  - Metrik: jumlah pesanan, total penjualan, rata-rata penjualan.  
-- **`dm_operasional_harian`** (Operasional Harian):  
-  - Memantau volume pesanan harian, biaya pengiriman, waktu pengiriman, dan metode pembayaran.  
+## 📦 What It Does
 
-### **2. View Analitis**  
-- **`vw_tren_pendapatan`** (Tren Pendapatan):  
-  - Menampilkan pendapatan bulanan untuk analisis tren.  
-- **`vw_kpi_operasional_mingguan`** (KPI Operasional Mingguan):  
-  - Menyajikan metrik operasional 7 hari terakhir.  
+- **Creates data mart tables**:
+  - `dm_penjualan_bulanan`: Monthly sales summary by product category and customer city.
+  - `dm_operasional_harian`: Daily operational KPIs including freight costs, delivery time, and payment methods.
+  
+- **Exports to SQLite** for further analysis or dashboard usage.
 
-## **Penyiapan & Eksekusi**  
-1. **Dependensi**:  
-   ```bash
-   pip install duckdb sqlite3 pandas
-   ```  
-2. **Jalankan skrip**:  
-   ```python
-   python data_mart_builder.py
-   ```  
-3. **Output**:  
-   - Data diproses dalam **`brazilian_ecommerce.db`** (DuckDB).  
-   - *Data mart* akhir disimpan di **`data_mart.db`** (SQLite).  
+- **Creates analytical views**:
+  - `vw_tren_pendapatan`: Revenue trend per month.
+  - `vw_kpi_operasional_mingguan`: Weekly operational KPIs.
 
-## **Cara Penggunaan**  
-Akses database SQLite untuk analisis:  
-```sql
--- Contoh: Lihat tren pendapatan bulanan
-SELECT * FROM vw_tren_pendapatan;
-```  
+## 🧰 Dependencies
 
-## **Detail Skema**  
-- **Tabel Sumber**:  
-  - `fact_orders`, `dim_date`, `dim_customers`, `fact_order_items`, `dim_products`, `dim_payments`  
-- **Filter**: Hanya pesanan **terkirim** (`order_status = 'delivered'`).  
+Make sure to install the required libraries:
+
+```bash
+pip install duckdb pandas
+
+## 🗃️ Input Assumptions
+
+This script assumes you already have the following dimension and fact tables in a DuckDB database named `brazilian_ecommerce.db`:
+
+- `fact_orders`
+- `fact_order_items`
+- `dim_date`
+- `dim_customers`
+- `dim_products`
+- `dim_payments`
+
+## 📊 Output Tables
+
+### 1. dm_penjualan_bulanan
+| year | month | month_name | kategori | kota | jumlah_order | total_penjualan | rata_rata_penjualan |
+|------|-------|------------|----------|------|---------------|------------------|----------------------|
+
+### 2. dm_operasional_harian
+| tanggal | nama_hari | jumlah_order | total_biaya_pengiriman | rata_rata_waktu_pengiriman | jumlah_metode_pembayaran |
+|---------|-----------|---------------|--------------------------|-----------------------------|---------------------------|
+
+### 3. vw_tren_pendapatan
+| year | month | month_name | pendapatan_bulanan |
+|------|-------|------------|---------------------|
+
+### 4. vw_kpi_operasional_mingguan
+| tahun | minggu_ke | awal_minggu | akhir_minggu | total_order | total_biaya_pengiriman | rata2_waktu_pengiriman | rata2_metode_pembayaran |
+|-------|-----------|--------------|---------------|--------------|-------------------------|-------------------------|--------------------------|
