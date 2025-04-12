@@ -66,7 +66,7 @@ sqlite_connect.execute("""
 CREATE OR REPLACE VIEW vw_kpi_operasional_mingguan AS
 SELECT *
 FROM dm_operasional_harian
-WHERE tanggal >= CURRENT_DATE - INTERVAL 7 DAY
+WHERE tanggal >= DATE(CURRENT_DATE - INTERVAL 7 DAY)
 ORDER BY tanggal DESC;
 """)
 # DataFrame KPI Operasional Mingguan
