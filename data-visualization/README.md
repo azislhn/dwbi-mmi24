@@ -1,4 +1,4 @@
-# Brazilian E-Commerce Data Mart Builder
+# Brazilian E-Commerce Data Mart
 
 This project builds a simple **Data Mart** from a Brazilian e-commerce dataset using **DuckDB** and **SQLite**. It creates two main data marts (monthly sales and daily operations), stores them in SQLite, and provides views for analytical purposes.
 
