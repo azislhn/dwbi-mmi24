@@ -14,13 +14,6 @@ This project builds a simple **Data Mart** from a Brazilian e-commerce dataset u
   - `vw_tren_pendapatan`: Revenue trend per month.
   - `vw_kpi_operasional_mingguan`: Weekly operational KPIs.
 
-## 🧰 Dependencies
-
-Make sure to install the required libraries:
-
-```bash
-pip install duckdb pandas
-
 ## 🗃️ Input Assumptions
 
 This script assumes you already have the following dimension and fact tables in a DuckDB database named `brazilian_ecommerce.db`:
